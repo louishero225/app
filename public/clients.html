@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Clients - GestCom</title>
+    <link href="./styles/main.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-orange-100 shadow-md">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-bold text-orange-500">GestCom</a>
+                </div>
+                <div class="hidden md:flex space-x-4">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home mr-2"></i>Accueil
+                    </a>
+                    <a href="/factures.html" class="nav-link">
+                        <i class="fas fa-file-invoice mr-2"></i>Factures
+                    </a>
+                    <a href="/commandes.html" class="nav-link">
+                        <i class="fas fa-shopping-cart mr-2"></i>Commandes
+                    </a>
+                    <a href="/clients.html" class="nav-link active">
+                        <i class="fas fa-users mr-2"></i>Clients
+                    </a>
+                </div>
+                <div class="flex items-center">
+                    <button class="relative p-2">
+                        <i class="fas fa-bell text-gray-600"></i>
+                        <span class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center notification-badge">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Header avec bouton d'ajout -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">Gestion des Clients</h1>
+            <button id="addClientBtn" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
+                <i class="fas fa-plus mr-2"></i>Nouveau Client
+            </button>
+        </div>
+
+        <!-- Barre de recherche et filtres -->
+        <div class="bg-white p-4 rounded-lg shadow mb-6">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1">
+                    <div class="relative">
+                        <input type="text" id="searchClient" placeholder="Rechercher un client..." 
+                               class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:border-orange-500">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <select id="sortBy" class="border rounded-lg px-4 py-2 focus:outline-none focus:border-orange-500">
+                        <option value="nom">Trier par nom</option>
+                        <option value="recent">Plus récents</option>
+                        <option value="ancien">Plus anciens</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des clients -->
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <!-- Table des clients (3/5 de l'espace) -->
+            <div class="lg:col-span-3 bg-white rounded-lg shadow overflow-hidden">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Téléphone</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clientsList" class="bg-white divide-y divide-gray-200">
+                        <!-- Les clients seront injectés ici par JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Panneau de détails du client (2/5 de l'espace) -->
+            <div id="clientDetails" class="lg:col-span-2 bg-white rounded-lg shadow p-6 hidden lg:block">
+                <div class="text-center py-8" id="noClientSelected">
+                    <i class="fas fa-user-circle text-gray-300 text-6xl mb-4"></i>
+                    <p class="text-gray-500">Sélectionnez un client pour voir les détails</p>
+                </div>
+                <div id="clientInfo" class="hidden">
+                    <!-- En-tête du client -->
+                    <div class="border-b pb-4 mb-6">
+                        <h3 class="text-2xl font-bold mb-3" id="detailClientName">Nom du Client</h3>
+                        <p class="text-gray-600 mb-2" id="detailClientEmail">email@example.com</p>
+                        <p class="text-gray-600 mb-2" id="detailClientPhone">Téléphone</p>
+                        <p class="text-gray-600" id="detailClientAddress">Adresse</p>
+                    </div>
+
+                    <!-- Statistiques du client -->
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div class="bg-orange-50 p-4 rounded-lg">
+                            <p class="text-sm text-gray-600">Commandes Totales</p>
+                            <p class="text-2xl font-bold text-orange-600" id="totalOrders">0</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <p class="text-sm text-gray-600">Montant Total</p>
+                            <p class="text-2xl font-bold text-green-600" id="totalAmount">0 €</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <p class="text-sm text-gray-600">Dernière Commande</p>
+                            <p class="text-2xl font-bold text-blue-600" id="lastOrderDate">-</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <p class="text-sm text-gray-600">Commande Moyenne</p>
+                            <p class="text-2xl font-bold text-purple-600" id="averageOrder">0 €</p>
+                        </div>
+                    </div>
+
+                    <!-- Dernières transactions -->
+                    <div class="mb-8">
+                        <h4 class="text-xl font-semibold mb-4">Dernières Transactions</h4>
+                        <div id="recentTransactions" class="space-y-4">
+                            <!-- Les transactions seront injectées ici -->
+                        </div>
+                    </div>
+
+                    <!-- Graphique d'activité -->
+                    <div>
+                        <h4 class="text-xl font-semibold mb-4">Activité Mensuelle</h4>
+                        <div id="activityChart" class="h-64 bg-gray-50 rounded-lg">
+                            <!-- Le graphique sera injecté ici -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal d'ajout/modification de client -->
+    <div id="clientModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full">
+            <h2 id="modalTitle" class="text-xl font-bold mb-4">Nouveau Client</h2>
+            <form id="clientForm">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Nom</label>
+                        <input type="text" id="clientName" name="nom" required
+                               class="mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Email (facultatif)</label>
+                        <input type="email" id="clientEmail" name="email"
+                               class="mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Téléphone</label>
+                        <input type="tel" id="clientPhone" name="telephone" required
+                               class="mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Adresse</label>
+                        <textarea id="clientAddress" name="adresse" required
+                                  class="mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"></textarea>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" id="cancelClientBtn" 
+                            class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                        Annuler
+                    </button>
+                    <button type="submit" 
+                            class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="./js/clients.js"></script>
+</body>
+</html>

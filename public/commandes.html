@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Commandes - GestCom</title>
+    <link href="./styles/main.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-orange-100 shadow-md">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-bold text-orange-500">GestCom</a>
+                </div>
+                <div class="hidden md:flex space-x-4">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home mr-2"></i>Accueil
+                    </a>
+                    <a href="/factures.html" class="nav-link">
+                        <i class="fas fa-file-invoice mr-2"></i>Factures
+                    </a>
+                    <a href="/commandes.html" class="nav-link active">
+                        <i class="fas fa-shopping-cart mr-2"></i>Commandes
+                    </a>
+                    <a href="/clients.html" class="nav-link">
+                        <i class="fas fa-users mr-2"></i>Clients
+                    </a>
+                </div>
+                <div class="flex items-center">
+                    <button class="relative p-2">
+                        <i class="fas fa-bell text-gray-600"></i>
+                        <span class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center notification-badge">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Header avec bouton d'ajout -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">Gestion des Commandes</h1>
+            <button id="addOrderBtn" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
+                <i class="fas fa-plus mr-2"></i>Nouvelle Commande
+            </button>
+        </div>
+
+        <!-- Filtres et recherche -->
+        <div class="bg-white p-4 rounded-lg shadow mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="col-span-2">
+                    <div class="relative">
+                        <input type="text" id="searchOrder" placeholder="Rechercher une commande..." 
+                               class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:border-orange-500">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                </div>
+                <div>
+                    <select id="filterStatus" class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-orange-500">
+                        <option value="">Tous les statuts</option>
+                        <option value="en_attente">En attente</option>
+                        <option value="en_cours">En cours</option>
+                        <option value="complete">Complété</option>
+                        <option value="annule">Annulé</option>
+                    </select>
+                </div>
+                <div>
+                    <select id="sortBy" class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-orange-500">
+                        <option value="recent">Plus récentes</option>
+                        <option value="ancien">Plus anciennes</option>
+                        <option value="montant_desc">Montant décroissant</option>
+                        <option value="montant_asc">Montant croissant</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des commandes -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <table class="min-w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">N° Commande</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Montant TTC</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersList" class="bg-white divide-y divide-gray-200">
+                    <!-- Les commandes seront injectées ici par JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Modal de commande -->
+    <div id="orderModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white rounded-lg p-8 max-w-7xl w-[95%] max-h-[90vh] overflow-y-auto">
+            <h2 id="modalTitle" class="text-2xl font-bold mb-6">Nouvelle Commande</h2>
+            <form id="orderForm">
+                <!-- Informations client -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-4">Information Commande</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Client</label>
+                            <select id="clientSelect" name="client_id" required
+                                    class="mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                                <option value="">Sélectionner un client</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Commercial</label>
+                            <select id="commercialSelect" name="commercial_id" required
+                                    class="mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                                <option value="">Sélectionner un commercial</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Date d'émission</label>
+                            <input type="date" id="dateEmission" name="date_emission" required
+                                   class="mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lignes de commande -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Lignes de Commande</h3>
+                        <button type="button" id="addLineBtn" class="text-orange-500 hover:text-orange-600">
+                            <i class="fas fa-plus mr-2"></i>Ajouter une ligne
+                        </button>
+                    </div>
+                    <!-- En-têtes des lignes -->
+                    <div class="grid grid-cols-12 gap-2 mb-2 font-medium text-sm text-gray-500">
+                        <div class="col-span-1">Code</div>
+                        <div class="col-span-3">Nom produit</div>
+                        <div class="col-span-2">Quantité</div>
+                        <div class="col-span-2">Prix unitaire TTC</div>
+                        <div class="col-span-3">Prix Total TTC</div>
+                        <div class="col-span-1"></div>
+                    </div>
+                    <div id="orderLines" class="space-y-2">
+                        <!-- Les lignes de commande seront ajoutées ici -->
+                    </div>
+                </div>
+
+                <!-- Remise -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-end space-x-4">
+                        <label class="text-sm font-medium text-gray-700">Remise</label>
+                        <select id="remiseSelect" name="remise" class="border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                            <option value="0">Pas de remise</option>
+                            <option value="1">1%</option>
+                            <option value="1.5">1.5%</option>
+                            <option value="2">2%</option>
+                            <option value="2.5">2.5%</option>
+                            <option value="3">3%</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Totaux -->
+                <div class="mt-6 space-y-2">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="font-medium">Total TTC avant remise:</span>
+                        <span id="totalTTCAvantRemise" class="font-semibold">0.00 €</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="font-medium">Montant remise (<span id="pourcentageRemise">0</span>%):</span>
+                        <span id="montantRemise" class="font-semibold text-red-600">0.00 €</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="font-medium">Montant TVA (15.255%):</span>
+                        <span id="montantTVA" class="font-semibold">0.00 €</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="font-medium">Total HT:</span>
+                        <span id="totalHT" class="font-semibold">0.00 €</span>
+                    </div>
+                    <div class="flex justify-between items-center text-lg font-bold text-orange-600 border-t border-gray-200 pt-2">
+                        <span>Montant à Payer:</span>
+                        <span id="montantAPayer">0.00 €</span>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancelOrderBtn" 
+                            class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                        Annuler
+                    </button>
+                    <button type="submit" 
+                            class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="./js/commandes.js"></script>
+</body>
+</html>

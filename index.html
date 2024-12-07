@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bordereau de Livraison</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+        }
+        .logo-placeholder {
+            width: 150px;
+            height: 60px;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        .header {
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+        }
+        .header h1 {
+            color: #2c3e50;
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+        .btn-add-row {
+            margin: 1rem 0;
+        }
+        .totals {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 2rem;
+        }
+        .delivery-status {
+            padding: 1rem;
+            margin-top: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+            border-color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="form-container">
+            <div class="header d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="logo-placeholder">
+                        <span class="text-muted">LOGO</span>
+                    </div>
+                    <h1>BORDEREAU DE LIVRAISON</h1>
+                </div>
+                <div class="text-end">
+                    <div class="mb-2">
+                        <strong>N° BL:</strong> 
+                        <span class="badge bg-secondary">BL-2024-001</span>
+                    </div>
+                    <div>
+                        <strong>Statut:</strong>
+                        <span class="badge bg-success">En cours</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Informations Client</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Client</label>
+                                <input type="text" class="form-control" id="client" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Adresse de livraison</label>
+                                <textarea class="form-control" id="address" rows="2" required></textarea>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Téléphone</label>
+                                        <input type="tel" class="form-control" id="phone" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Détails de la Livraison</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Date de livraison</label>
+                                        <input type="date" class="form-control" id="deliveryDate" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Heure prévue</label>
+                                        <input type="time" class="form-control" id="deliveryTime">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">N° Commande</label>
+                                <input type="text" class="form-control" id="orderNumber" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mode de livraison</label>
+                                <select class="form-select" id="deliveryMethod">
+                                    <option value="standard">Standard</option>
+                                    <option value="express">Express</option>
+                                    <option value="pickup">Retrait en magasin</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="orderTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 15%">CODE</th>
+                            <th style="width: 35%">Désignation</th>
+                            <th style="width: 15%">Qté</th>
+                            <th style="width: 15%">P.U TTC</th>
+                            <th style="width: 15%">P.T TTC</th>
+                            <th style="width: 5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderBody">
+                        <tr>
+                            <td><input type="text" class="form-control form-control-sm" required></td>
+                            <td><input type="text" class="form-control form-control-sm" required></td>
+                            <td><input type="number" class="form-control form-control-sm" min="1" required></td>
+                            <td><input type="number" class="form-control form-control-sm" step="0.01" min="0" required></td>
+                            <td><input type="number" class="form-control form-control-sm" readonly></td>
+                            <td><button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="btn btn-secondary btn-add-row">
+                <i class="bi bi-plus-circle"></i> Ajouter une ligne
+            </button>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="delivery-status">
+                        <h5>Notes et Instructions</h5>
+                        <textarea class="form-control" rows="3" placeholder="Instructions spéciales pour la livraison..."></textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="totals">
+                        <table class="table table-sm">
+                            <tr>
+                                <td class="text-end"><strong>Total HT:</strong></td>
+                                <td class="text-end" style="width: 150px">0.00 €</td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><strong>TVA (20%):</strong></td>
+                                <td class="text-end">0.00 €</td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><strong>Total TTC:</strong></td>
+                                <td class="text-end"><strong>0.00 €</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 text-end">
+                <button class="btn btn-secondary me-2">
+                    <i class="bi bi-printer"></i> Imprimer
+                </button>
+                <button class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Valider
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

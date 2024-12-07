@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Gestion des Commandes</title>
+    <link href="./styles/main.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-orange-100 shadow-md">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-bold text-orange-500">GestCom</a>
+                </div>
+                <div class="hidden md:flex space-x-4">
+                    <a href="/" class="nav-link active">
+                        <i class="fas fa-home mr-2"></i>Accueil
+                    </a>
+                    <a href="/factures.html" class="nav-link">
+                        <i class="fas fa-file-invoice mr-2"></i>Factures
+                    </a>
+                    <a href="/commandes.html" class="nav-link">
+                        <i class="fas fa-shopping-cart mr-2"></i>Commandes
+                    </a>
+                    <a href="/clients.html" class="nav-link">
+                        <i class="fas fa-users mr-2"></i>Clients
+                    </a>
+                </div>
+                <div class="flex items-center">
+                    <button class="relative p-2">
+                        <i class="fas fa-bell text-gray-600"></i>
+                        <span class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center notification-badge">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Commandes en attente</p>
+                        <h3 class="text-2xl font-bold stats-pending">0</h3>
+                    </div>
+                    <div class="bg-orange-100 p-3 rounded-full">
+                        <i class="fas fa-clock text-orange-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Paiements reçus</p>
+                        <h3 class="text-2xl font-bold stats-payments">0 €</h3>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i class="fas fa-euro-sign text-green-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Nombre de Clients</p>
+                        <h3 class="text-2xl font-bold stats-clients">0</h3>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <i class="fas fa-users text-blue-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="space-y-6">
+            <!-- Recent Orders -->
+            <div class="card">
+                <h2 class="text-xl font-bold mb-4">Commandes Récentes</h2>
+                <div class="space-y-4 recent-orders">
+                    <!-- Les commandes seront injectées ici par JavaScript -->
+                    <div class="flex justify-center">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="card">
+                <h2 class="text-xl font-bold mb-4">Notifications Récentes</h2>
+                <div class="space-y-4 notifications-list">
+                    <!-- Les notifications seront injectées ici par JavaScript -->
+                    <div class="flex justify-center">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="./js/dashboard.js"></script>
+</body>
+</html>
